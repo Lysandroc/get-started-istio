@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: solicitacoes
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: solicitacoes
+    spec:
+      containers:
+      - name: solicitacoes
+        image: micx0/apisolicitacaorelatorios:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80

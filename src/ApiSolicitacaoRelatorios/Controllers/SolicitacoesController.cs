@@ -1,45 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using ApiSolicitacaoRelatorios.Models;
+using ApiSolicitacaoRelatorios.ModelViews;
+using ApiSolicitacaoRelatorios.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApiSolicitacaoRelatorios.Controllers
+namespace ApiSolicitacaoSolicitacaos.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class SolicitacoesController : ControllerBase
     {
-        // GET api/values
+        private readonly SolicitacoesRepository _solicitacoesRepository;
+        static HttpClient client = new HttpClient();
+        public SolicitacoesController(SolicitacoesRepository SolicitacaosRepository) 
+        {
+            this._solicitacoesRepository = SolicitacaosRepository;
+            
+        }
+        // GET api/Solicitacaos
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<Solicitacao>> GetSolicitacaos()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(this._solicitacoesRepository.Solicitacoes.ToList());        
         }
 
-        // GET api/values/5
+        // GET api/Solicitacaos/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public async Task<ActionResult<Solicitacao>> GetSolicitacao(Int64 id)
         {
-            return "value";
+            var solicitacao = await _solicitacoesRepository.Solicitacoes.FindAsync(id);
+
+            if (solicitacao == null)
+            {
+                return NotFound();
+            }
+
+            return solicitacao;
         }
 
-        // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<Solicitacao>> PostSolicitacao(SolicitacaoModelView modelView)
         {
+            var solicitacao = new Solicitacao();
+            solicitacao.EmailSolicitante = modelView.EmailSolicitante;
+            solicitacao.Filtros = modelView.Filtros;
+            solicitacao.IdRelatorio = modelView.IdRelatorio;
+
+            _solicitacoesRepository.Solicitacoes.Add(solicitacao);
+            await _solicitacoesRepository.SaveChangesAsync();
+
+            return CreatedAtAction("GetSolicitacao", new { id = solicitacao.Id }, solicitacao);
+        }
+        
+        [HttpGet("{id}/relatorio")]
+        public async Task<ActionResult<Relatorio>> GetRelatorio(Int64 id) {
+            var solicitacao = await this._solicitacoesRepository.Solicitacoes.FindAsync(id);
+            Relatorio relatorio = null;
+
+            HttpResponseMessage response = await client.GetAsync($"http://relatorios/api/relatorios/{solicitacao.IdRelatorio}");
+            if (response.IsSuccessStatusCode)
+            {
+                relatorio = await response.Content.ReadAsAsync<Relatorio>();
+            }
+            return relatorio;
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
+

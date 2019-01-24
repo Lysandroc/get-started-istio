@@ -4,15 +4,15 @@ namespace ApiSolicitacaoRelatorios.Models
 {
     public class Relatorio
     {
-        public Guid Id {get;set;}
-        public String Nome{get;set;}
-        public String Descricao{get;set;}
-        
-        public Relatorio(String nome, String descricao)
+        public Relatorio(Int64 id, String nome, String descricao)
         {
-            this.Id = Guid.NewGuid();
+            this.Id = id;
             this.Nome = nome;
             this.Descricao = descricao;
         }
+
+        public Int64 Id { get; set; }
+        public String Nome { get; set; }
+        public String Descricao { get; set; }
     }
 }
