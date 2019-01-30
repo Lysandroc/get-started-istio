@@ -14,6 +14,9 @@ RUN dotnet publish -c Release -o out
 
 # Construir imagem de tempo de execucao
 FROM microsoft/dotnet:aspnetcore-runtime
+
+EXPOSE 80
+
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENTRYPOINT [ "dotnet", "ApiSolicitacaoRelatorios.dll" ]

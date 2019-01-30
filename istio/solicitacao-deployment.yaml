@@ -11,7 +11,20 @@ spec:
     spec:
       containers:
       - name: solicitacoes
-        image: micx0/apisolicitacaorelatorios:1.0.0
-        imagePullPolicy: Always
+        image: micx0/apisolicitacaorelatorios
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: solicitacoes
+  labels:
+    app: solicitacoes
+spec:
+  ports:
+  - port: 80
+    name: http
+  selector:
+    app: solicitacoes

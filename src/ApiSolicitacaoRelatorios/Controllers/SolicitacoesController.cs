@@ -69,6 +69,12 @@ namespace ApiSolicitacaoSolicitacaos.Controllers
             return relatorio;
         }
 
+        [HttpGet("/hello")]
+        public ActionResult<Relatorio> GetRelatorio() {
+            
+            return Ok("Michel Olá");
+        }
+
     }
 }
 

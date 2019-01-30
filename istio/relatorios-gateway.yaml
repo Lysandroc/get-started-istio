@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: solicitacoes-gateway
+  name: relatorios-gateway
 spec:
   selector:
     istio: ingressgateway # use istio default controller
@@ -16,18 +16,18 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: solicitacoes
+  name: relatorios
 spec:
   hosts:
   - "*"
   gateways:
-  - solicitacoes-gateway
+  - relatorios-gateway
   http:
   - match:
     - uri:
-        prefix: /api/solicitacoes
+        prefix: /api/relatorios
     route:
     - destination:
-        host: solicitacoes
+        host: relatorios
         port:
           number: 80

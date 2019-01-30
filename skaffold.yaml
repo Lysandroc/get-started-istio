@@ -1,0 +1,13 @@
+apiVersion: skaffold/v1beta2
+kind: Config
+build:
+  artifacts:
+  - image: micx0/apirelatorios
+    context: ./src/ApiRelatorios
+  - image: micx0/apisolicitacaorelatorios
+    context: ./src/ApiSolicitacaoRelatorios
+deploy:
+  kubectl:
+    manifests:
+    - ./istio/relatorios-deployment.yaml
+    - ./istio/solicitacao-deployment.yaml
